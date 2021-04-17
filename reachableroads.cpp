@@ -1,50 +1,48 @@
 #include <bits/stdc++.h>
 using namespace std;
-typedef long long int lli;
-typedef unsigned long long ull;
-#define all(x) (x).begin(),(x).end()
 
 vector <int> graph[1000];
 
 int main() {
-    int tc, nc, nr, ts, td;
-    vector <int> tn;
-    scanf("%d", &tc);
-    while(tc--) {
-        scanf("%d %d", &nc, &nr);
-        int discovered[nc];
-        memset(discovered, 0, sizeof(discovered));
-        for(int p=0; p<nr; p++) {
-            scanf("%d %d", &ts, &td);
+    int n, m, r, ts, td;
+    vector <int> tn; //init vector
+    scanf("%d", &n); //input the num of city
+    while(n--) {
+        scanf("%d %d", &m, &r); //input the m (num of road endpoints) & r pairs of endpoints
+        int discovered[m]; //init the array of road (city)
+        memset(discovered, 0, sizeof(discovered)); //set it all as 0
+        for(int i = 0; i < r; i++) {
+            scanf("%d %d", &ts, &td); //input each pair of roads, ts (start road), td(end road)
             graph[ts].push_back(td);
-            graph[td].push_back(ts);
+            graph[td].push_back(ts); 
         }
-        int id = 0, ndfs = 0, currv;
-        while(id < nc) {
+        int id = 0, addedRoad = 0, temp;
+        while(id < m) {
             if(discovered[id] == 1)
                 id++;
             else{
-                stack <int> sta;
-                sta.push(id);
-                while(sta.size() > 0) {
-                    currv=sta.top();
-                    sta.pop();
-                    if(discovered[currv] == 0){
-                        discovered[currv]++;
+                stack <int> stackRoad;
+                stackRoad.push(id); //id
+                while(stackRoad.size() > 0) {
+                    temp = stackRoad.top(); //0
+                    stackRoad.pop(); //clear
+                    if(discovered[temp] == 0){
+                        discovered[temp]++;
                     }
-                    tn = graph[currv];
-                    for(int x=0; x<tn.size(); x++) {
-                        if(discovered[tn[x]] == 0)
-                            sta.push(tn[x]);
+                    tn = graph[temp];
+                    for(int i = 0; i < tn.size(); i++) {
+                        if(discovered[tn[i]] == 0){
+                            stackRoad.push(tn[i]); //push in the td according to the ts 
+                        }
                     }
                 }
-                ndfs++;
+                addedRoad++;
             }
         }
+        printf("%d\n",addedRoad-1); //print out the added road needed
         //clear graph & temporary neighbor
-        printf("%d\n",ndfs-1);
         for(int i = 0; i < 1000; i++) {
-            graph[i].clear();
+            graph[i].clear(); 
             if(i == 0)
                 tn.clear();   
         }
